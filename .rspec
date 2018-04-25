@@ -1,0 +1,5 @@
+--color
+--order random
+--require spec_helper
+--format documentation --color
+--format html --out spec/reports/rspec_results.html

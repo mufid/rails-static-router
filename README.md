@@ -1,114 +1,92 @@
-# Rails Static Router
+# Rack Domain Filter
 
-> Enjoy static routes in your Rails `config/routes.rb` (sorry its not a gem yet).
+## Prerequisites
 
-<!-- MarkdownTOC depth=0 autolink=true bracket=round -->
-
-- [Example use](#example-use)
-- [Why?](#why)
-- [Installation](#installation)
-- [TODO](#todo)
-- [Contributors](#contributors)
-
-<!-- /MarkdownTOC -->
-
-## Example use
-
-```ruby
-Rails.application.routes.draw do
-  ...
-  # This route will serve public/index.html at the /login URL path, and have
-  # URL helper named `login_path`:
-  get "/login", to: static("index.html")
-
-  # This route will serve public/index.html at the /register URL path, and
-  # have URL helper named `new_user_registration_path`:
-  get "/register", to: static("index.html"), as: :new_user_registration
-  ...
-end
-```
-
-`bin/rake routes` output for the above routes:
-
-```
-               Prefix  Verb  URI Pattern          Controller#Action
-                login  GET   /login(.:format)     static('index.html')
-new_user_registration  GET   /register(.:format)  static('index.html')
-```
- 
-## Why?
-
-This introduces a `static(path_to_file)` helper method to route to static files
-from within `routes.rb`. It is inspired by Rails' existing `redirect(...)` method.
-
-Some benefits of this technique over alternatives (such as rack-rewrite,
-nginx/httpd-configured rewrites):
-
-- Named URL helper method for static file available throughout app, for
-  example in mail templates, view templates, and tests.
-
-- Route discoverable via `bin/rake routes` and Routing Error page in development.
-
-- Takes advantage of ActionDispatch's built-in gzip handling. Controller action
-  based solutions for rendering static files tend to not use this.
-
-- Handy for Single Page Apps that serve the same static HTML file for multiple
-  paths, as is often the case with Ember & Angular apps.
-
-- Heroku-like production environments work with this that do use the Rails app
-  to serve static files.
-
-- Leaves door open for nginx, Apache, Varnish and friends to serve the static
-  files directly for improved performance in production environments via symlinks
-  and/or other artifacts generated at deploy time.
-
+- Ruby 2.1+
 
 ## Installation
 
-1. Create `config/initializers/static_router.rb` with the entire contents of [static_router.rb](static_router.rb)
-2. Restart app
-3. Start using the `static(path)` method in your `config/routes.rb`
+Put this into `Gemfile`:
 
-```ruby
-module ActionDispatch
-  module Routing
-    class StaticResponder < Endpoint
+    gem 'rack-domain-filter'
 
-      attr_accessor :path, :file_handler
+Then run `bundle`.
 
-      def initialize(path)
-        self.path = path
-        self.file_handler = ActionDispatch::FileHandler.new(
-          Rails.configuration.paths["public"].first,
-          Rails.configuration.static_cache_control
-        )
+## Builder API
+
+See Yarddoc for more information.
+
+## Usage
+
+Suppose you have `Company` model. In Rails, you can do
+like this:
+
+    # Put this inside application.rb, or
+    # any environment file in config/environments/*.rb
+
+    Rack::DomainFilter.configure do |config|
+      config.filter_for /(.+).local.dev/ do |slug|
+        Thread.current[:company] = Company.find_by!(slug)
       end
 
-      def call(env)
-        env["PATH_INFO"] = @file_handler.match?(path)
-        @file_handler.call(env)
+      config.filter_for /(.+).peentar.id/ do |slug|
+        Thread.current[:company] = Company.find_by!(slug)
       end
 
-      def inspect
-        "static('#{path}')"
+      config.filter_for /tenant-onpremise.ourclients.com/ do
+        Thread.current[:company] = Company.find_by!(slug: 'tenant-onpremise.ourclients.com')
       end
 
+      config.catch ActiveRecord::NotFound do
+        [404, {}, "Not Found"]
+      end
+
+      config.no_match do
+        [404, {}, "No slug found"]
+      end
+
+      config.after_request do
+        Thread.current[:company] = nil
+      end
     end
 
-    class Mapper
-      def static(path)
-        StaticResponder.new(path)
+    config.middleware.use Rack::DomainFilter
+
+In your controller, you can get your current company with
+this syntax:
+
+    class ApplicationController < ActionController::Base
+      def current_company
+        Thread.current[:company]
       end
     end
-  end
-end
-```
 
-## TODO
+    def ApplicationHelper
+      def current_company
+        Thread.current[:company]
+      end
+    end
 
-Gemify.
+You may want to put this into global filter. This
+is quick but dirty solution.
 
-## Contributors
+    class ApplicationRecord < ActiveRecord::Base
+      default_scope do
+        if Thread.current[:company]
+          where(company_id: Thread.current[:company].id)
+        else
+          nil
+        end
+      end
+    end
 
-- Eliot Sykes https://eliotsykes.com/
-- Your name here! Contributions are welcome and easy. Fork the GitHub repo, make your changes, then submit your pull request. Don't hesitate to ask if you'd like some help.
+The best way to use this is to explictly
+ask Model to search in current company scope
+
+    class ApplicationRecord < ActiveRecord::Base
+      scope :in_current_company, -> { where(company: Thread.current[:company]) }
+    end
+
+    class Manager < ApplicationRecord; end
+
+    @managers = Manager.in_current_company
