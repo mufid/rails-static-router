@@ -4,7 +4,7 @@ require 'rails_static_router/version'
 
 Gem::Specification.new do |spec|
   spec.authors       = ['Eliot Sykes', 'Muhammad Mufid Afif']
-  spec.description   = 'Check Gitlab Web Status via HTTP Response.'
+  spec.description   = 'Enjoy static routes in your Rails `config/routes.rb`'
   spec.email         = ['mufidafif@icloud.com']
   spec.files         = `git ls-files -z`.split("\x0").reject { |f| f.start_with?('spec/') }
   spec.homepage      = 'https://github.com/mufid/rails-static-router'
