@@ -1,92 +1,100 @@
-# Rack Domain Filter
+# Rails Static Router [![Build Status](https://travis-ci.org/mufid/rails-static-router.svg?branch=master)](https://travis-ci.org/mufid/rails-static-router)
 
-## Prerequisites
+Enjoy static routes in your Rails `config/routes.rb`.
 
-- Ruby 2.1+
+<!-- MarkdownTOC depth=0 autolink=true bracket=round -->
+
+- [Installation](#installation)
+- [Example use](#example-use)
+- [Why?](#why)
+- [TODO](#todo)
+- [Contributors](#contributors)
+
+<!-- /MarkdownTOC -->
 
 ## Installation
 
-Put this into `Gemfile`:
+1. Put `gem 'rails-static-router'` in your `Gemfile`
+2. Restart app
 
-    gem 'rack-domain-filter'
+## Example use
 
-Then run `bundle`.
+```ruby
+Rails.application.routes.draw do
+  ...
+  # This route will serve public/index.html at the /login URL path, and have
+  # URL helper named `login_path`:
+  get "/login", to: static("index.html")
 
-## Builder API
+  # This route will serve public/index.html at the /register URL path, and
+  # have URL helper named `new_user_registration_path`:
+  get "/register", to: static("index.html"), as: :new_user_registration
+  ...
+end
+```
 
-See Yarddoc for more information.
+`bin/rake routes` output for the above routes:
 
-## Usage
+```
+               Prefix  Verb  URI Pattern          Controller#Action
+                login  GET   /login(.:format)     static('index.html')
+new_user_registration  GET   /register(.:format)  static('index.html')
+```
+ 
+## Why?
 
-Suppose you have `Company` model. In Rails, you can do
-like this:
+This introduces a `static(path_to_file)` helper method to route to static files
+from within `routes.rb`. It is inspired by Rails' existing `redirect(...)` method.
 
-    # Put this inside application.rb, or
-    # any environment file in config/environments/*.rb
+Some benefits of this technique over alternatives (such as rack-rewrite,
+nginx/httpd-configured rewrites):
 
-    Rack::DomainFilter.configure do |config|
-      config.filter_for /(.+).local.dev/ do |slug|
-        Thread.current[:company] = Company.find_by!(slug)
-      end
+- Named URL helper method for static file available throughout app, for
+  example in mail templates, view templates, and tests.
 
-      config.filter_for /(.+).peentar.id/ do |slug|
-        Thread.current[:company] = Company.find_by!(slug)
-      end
+- Route discoverable via `bin/rake routes` and Routing Error page in development.
 
-      config.filter_for /tenant-onpremise.ourclients.com/ do
-        Thread.current[:company] = Company.find_by!(slug: 'tenant-onpremise.ourclients.com')
-      end
+- Takes advantage of ActionDispatch's built-in gzip handling. Controller action
+  based solutions for rendering static files tend to not use this.
 
-      config.catch ActiveRecord::NotFound do
-        [404, {}, "Not Found"]
-      end
+- Handy for Single Page Apps that serve the same static HTML file for multiple
+  paths, as is often the case with Ember & Angular apps.
 
-      config.no_match do
-        [404, {}, "No slug found"]
-      end
+- Heroku-like production environments work with this that do use the Rails app
+  to serve static files.
 
-      config.after_request do
-        Thread.current[:company] = nil
-      end
-    end
+- Leaves door open for nginx, Apache, Varnish and friends to serve the static
+  files directly for improved performance in production environments via symlinks
+  and/or other artifacts generated at deploy time.
 
-    config.middleware.use Rack::DomainFilter
+## Contributors
 
-In your controller, you can get your current company with
-this syntax:
+- Eliot Sykes https://eliotsykes.com/
+- Muhammad Mufid Afif https://mufid.github.io
+- Your name here! Contributions are welcome and easy. Fork the GitHub repo, make your changes, then submit your pull request. Don't hesitate to ask if you'd like some help.
 
-    class ApplicationController < ActionController::Base
-      def current_company
-        Thread.current[:company]
-      end
-    end
+## Contributing
 
-    def ApplicationHelper
-      def current_company
-        Thread.current[:company]
-      end
-    end
+We are using Appraisals to test against multiple Rails version. To set it
+up for the first time, please run:
 
-You may want to put this into global filter. This
-is quick but dirty solution.
+    bundle install
+    bundle exec appraisal install
 
-    class ApplicationRecord < ActiveRecord::Base
-      default_scope do
-        if Thread.current[:company]
-          where(company_id: Thread.current[:company].id)
-        else
-          nil
-        end
-      end
-    end
+After Appraisal installed, use this command to run the test:
 
-The best way to use this is to explictly
-ask Model to search in current company scope
+    bundle exec appraisal rake test
 
-    class ApplicationRecord < ActiveRecord::Base
-      scope :in_current_company, -> { where(company: Thread.current[:company]) }
-    end
+To test it agains multiple Ruby version, you may want to use rvm.
+For example:
 
-    class Manager < ApplicationRecord; end
+    # Test it against all specified Rails version
+    # with Ruby version 2.3.7
+    rvm install 2.3.7
+    rvm use 2.3.7
+    bundle exec appraisals rake test
 
-    @managers = Manager.in_current_company
+    # Test it against all specified Rails version
+    # with Ruby version 2.4.4
+    rvm install 2.4.4
+    bundle exec appraisals rake test
