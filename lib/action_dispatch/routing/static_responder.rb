@@ -46,9 +46,8 @@
 #   and/or other artifacts generated at deploy time.
 #
 
-if Gem::Version.new(Rails.version) >= Gem::Version.new('5.0')
-  require 'action_dispatch/middleware/static'
-end
+# Required if serve_static_assets set to false
+require 'action_dispatch/middleware/static'
 
 module ActionDispatch
   module Routing
