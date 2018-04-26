@@ -25,3 +25,10 @@ appraise 'rails51' do
 
   gem 'rspec-rails'
 end
+
+appraise 'rails52' do
+  gem 'rails', '~> 5.2.0'
+  gem 'sqlite3'
+
+  gem 'rspec-rails'
+end
