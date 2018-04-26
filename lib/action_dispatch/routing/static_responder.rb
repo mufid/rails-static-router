@@ -45,6 +45,11 @@
 #   files directly for improved performance in production environments via symlinks
 #   and/or other artifacts generated at deploy time.
 #
+
+if Gem::Version.new(Rails.version) >= Gem::Version.new('5.0')
+  require 'action_dispatch/middleware/static'
+end
+
 module ActionDispatch
   module Routing
     if Gem::Version.new(Rails.version) >= Gem::Version.new('4.2')
@@ -56,7 +61,7 @@ module ActionDispatch
     if Gem::Version.new(Rails.version) >= Gem::Version.new('5.0')
       class StaticResponder
         def file_handler
-          @file_handler ||= ActionDispatch::FileHandler.new(
+          @file_handler ||= ::ActionDispatch::FileHandler.new(
             Rails.configuration.paths["public"].first
           )
         end
@@ -64,7 +69,7 @@ module ActionDispatch
     else
       class StaticResponder
         def file_handler
-          @file_handler ||= ActionDispatch::FileHandler.new(
+          @file_handler ||= ::ActionDispatch::FileHandler.new(
             Rails.configuration.paths["public"].first,
             Rails.configuration.static_cache_control
           )
