@@ -41,6 +41,10 @@ end
 new_user_registration  GET   /register(.:format)  static('index.html')
 ```
  
+## Compatibility
+
+This gem is compatible with Rails 4.1+.
+
 ## Why?
 
 This introduces a `static(path_to_file)` helper method to route to static files
