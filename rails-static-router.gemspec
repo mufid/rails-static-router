@@ -15,8 +15,6 @@ Gem::Specification.new do |spec|
   spec.summary       = spec.description
   spec.version       = RailsStaticRouter::VERSION
 
-  spec.add_dependency 'railties', '>= 4.1', '<= 5.2'
-
   # Test and build tools
   # The test shouldn't broken by the incompatible RSpec version.
   # Thus, we need to lock the version.
@@ -34,6 +32,5 @@ Gem::Specification.new do |spec|
   spec.add_development_dependency 'pry'
   spec.add_development_dependency 'reek'
   spec.add_development_dependency 'rubocop'
-  spec.add_development_dependency 'sqlite3'
   spec.add_development_dependency 'yard'
 end

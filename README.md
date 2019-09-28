@@ -85,9 +85,15 @@ up for the first time, please run:
     bundle install
     bundle exec appraisal install
 
-After Appraisal installed, use this command to run the test:
+After Appraisal installed, use this command to run all the test:
 
     bundle exec appraisal rake test
+
+To run against only specific Rails version, you can specify it
+with `BUNDLE_GEMFILE`. For example, if you want to run only
+against Rails 5.2, you can execute command below.
+
+    BUNDLE_GEMFILE=gemfiles/rails52.gemfile bundle exec rake test
 
 To test it agains multiple Ruby version, you may want to use rvm.
 For example:
@@ -96,9 +102,9 @@ For example:
     # with Ruby version 2.3.7
     rvm install 2.3.7
     rvm use 2.3.7
-    bundle exec appraisals rake test
+    bundle exec appraisal rake test
 
     # Test it against all specified Rails version
     # with Ruby version 2.4.4
     rvm install 2.4.4
-    bundle exec appraisals rake test
+    bundle exec appraisal rake test
