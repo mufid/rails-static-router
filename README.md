@@ -93,7 +93,7 @@ To run against only specific Rails version, you can specify it
 with `BUNDLE_GEMFILE`. For example, if you want to run only
 against Rails 5.2, you can execute command below.
 
-    BUNDLE_GEMFILE=gemfiles/rails52.gemfile bundle exec rake test
+    BUNDLE_GEMFILE=gemfiles/rails51.gemfile bundle exec rake test
 
 To test it agains multiple Ruby version, you may want to use rvm.
 For example:
