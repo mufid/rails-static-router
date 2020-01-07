@@ -15,7 +15,7 @@ Gem::Specification.new do |spec|
   spec.summary       = spec.description
   spec.version       = RailsStaticRouter::VERSION
 
-  spec.add_dependency 'railties', '>= 4.1', '<= 6.0'
+  spec.add_dependency 'railties', '>= 4.1', '< 6.1'
 
   # Test and build tools
   # The test shouldn't broken by the incompatible RSpec version.
