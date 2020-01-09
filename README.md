@@ -114,3 +114,8 @@ For example:
 
 For contributors that have access to release server, do the
 following commands to release the gem.
+
+    # Edit version.rb to match next version, then
+    git add .
+    git commit -m "ops: <NEXT_VERSION> release"
+    bundle exec rake release
