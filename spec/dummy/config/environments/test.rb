@@ -44,7 +44,7 @@ Rails.application.configure do
 
     config.public_file_server.enabled = false
     config.public_file_server.headers = {
-      'Cache-Control' => "public, max-age=#{1.hour.seconds.to_i}"
+      'Cache-Control' => "my-cache-control"
     }
 
   else
@@ -63,7 +63,7 @@ Rails.application.configure do
 
     # Configure static asset server for tests with Cache-Control for performance.
     config.serve_static_assets  = false
-    config.static_cache_control = 'public, max-age=3600'
+    config.static_cache_control = 'my-cache-control'
 
     # Show full error reports and disable caching.
     config.consider_all_requests_local       = true

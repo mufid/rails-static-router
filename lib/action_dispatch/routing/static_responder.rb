@@ -51,17 +51,19 @@ require 'action_dispatch/middleware/static'
 
 module ActionDispatch
   module Routing
+
     if Gem::Version.new(Rails.version) >= Gem::Version.new('4.2')
       class StaticResponder < Endpoint; end
     else
       class StaticResponder; end
     end
 
-    if Gem::Version.new(Rails.version) >= Gem::Version.new('5.0')
+    if Gem::Version.new(Rails.version) < Gem::Version.new('5.0')
       class StaticResponder
         def file_handler
           @file_handler ||= ::ActionDispatch::FileHandler.new(
-            Rails.configuration.paths["public"].first
+            Rails.configuration.paths["public"].first,
+            Rails.configuration.static_cache_control
           )
         end
       end
@@ -70,7 +72,7 @@ module ActionDispatch
         def file_handler
           @file_handler ||= ::ActionDispatch::FileHandler.new(
             Rails.configuration.paths["public"].first,
-            Rails.configuration.static_cache_control
+            headers: Rails.configuration.public_file_server.headers
           )
         end
       end

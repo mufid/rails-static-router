@@ -5,6 +5,7 @@ RSpec.describe 'Integration Test', type: :request do
     get '/lucu.txt'
     expect(response).to have_http_status(:ok)
     expect(response.body.strip).to eq('hi!')
+    expect(response.headers['Cache-Control']).to eq('my-cache-control')
   end
 
   it 'cant response via non-defined static routes' do
