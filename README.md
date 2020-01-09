@@ -1,4 +1,4 @@
-# Rails Static Router [![Build Status](https://travis-ci.org/mufid/rails-static-router.svg?branch=master)](https://travis-ci.org/mufid/rails-static-router)
+# Rails Static Router [![Build Status](https://travis-ci.org/mufid/rails-static-router.svg?branch=master)](https://travis-ci.org/mufid/rails-static-router) [![Gem Version](https://badge.fury.io/rb/rails-static-router.svg)](https://badge.fury.io/rb/rails-static-router)
 
 Enjoy static routes in your Rails `config/routes.rb`.
 
