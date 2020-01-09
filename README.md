@@ -7,7 +7,6 @@ Enjoy static routes in your Rails `config/routes.rb`.
 - [Installation](#installation)
 - [Example use](#example-use)
 - [Why?](#why)
-- [TODO](#todo)
 - [Contributors](#contributors)
 
 <!-- /MarkdownTOC -->
@@ -93,7 +92,9 @@ To run against only specific Rails version, you can specify it
 with `BUNDLE_GEMFILE`. For example, if you want to run only
 against Rails 5.2, you can execute command below.
 
-    BUNDLE_GEMFILE=gemfiles/rails51.gemfile bundle exec rake test
+    export BUNDLE_GEMFILE=gemfiles/rails51.gemfile
+    bundle install
+    bundle exec rake test
 
 To test it agains multiple Ruby version, you may want to use rvm.
 For example:
@@ -108,3 +109,8 @@ For example:
     # with Ruby version 2.4.4
     rvm install 2.4.4
     bundle exec appraisal rake test
+
+## Releasing
+
+For contributors that have access to release server, do the
+following commands to release the gem.
