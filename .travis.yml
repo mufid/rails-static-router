@@ -14,4 +14,6 @@ matrix:
     - gemfile: gemfiles/rails52.gemfile
       rvm: 2.4.6
     - gemfile: gemfiles/rails60.gemfile
-      rvm: 2.6.3
+      rvm: 2.6.6
+    - gemfile: gemfiles/rails61.gemfile
+      rvm: 2.7.1

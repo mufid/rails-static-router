@@ -44,6 +44,11 @@ new_user_registration  GET   /register(.:format)  static('index.html')
 
 This gem is compatible with Rails 4.1+.
 
+## Rails API Mode
+
+We don't recommend use this gem if you are using Rails API Mode. Your apps
+supposed to only serving API, not assets.
+
 ## Why?
 
 This introduces a `static(path_to_file)` helper method to route to static files
