@@ -91,9 +91,15 @@ module ActionDispatch
         file_handler
       end
 
-      def call(env)
-        env["PATH_INFO"] = @file_handler.match?(path)
-        @file_handler.call(env)
+      if Gem::Version.new(Rails.version) < Gem::Version.new('6.1')
+        def call(env)
+          env["PATH_INFO"] = @file_handler.match?(path)
+          @file_handler.call(env)
+        end
+      else
+        def call(env)
+          @file_handler.call(env)
+        end
       end
 
       def inspect

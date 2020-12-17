@@ -39,3 +39,11 @@ appraise 'rails60' do
 
   gem 'rspec-rails'
 end
+
+appraise 'rails61' do
+  gem 'rails', '~> 6.1.0'
+  gem 'sqlite3'
+
+  gem 'rspec-rails'
+end
+

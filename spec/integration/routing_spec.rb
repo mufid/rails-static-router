@@ -11,4 +11,10 @@ RSpec.describe 'Integration Test', type: :request do
   it 'cant response via non-defined static routes' do
     expect { get '/mantap.txt' }.to raise_exception
   end
+
+  it 'works with normal controller' do
+    get '/aroute'
+    expect(response).to have_http_status(:ok)
+    expect(response.body.strip).to eq('hi2!')
+  end
 end
