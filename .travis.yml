@@ -1,12 +1,16 @@
 language: ruby
+
+os: linux
 dist: focal
 
 matrix:
   include:
     - gemfile: gemfiles/rails41.gemfile
       rvm: 2.3.8
+      dist: xenial
     - gemfile: gemfiles/rails42.gemfile
       rvm: 2.3.8
+      dist: xenial
     - gemfile: gemfiles/rails50.gemfile
       rvm: 2.4.6
     - gemfile: gemfiles/rails51.gemfile
