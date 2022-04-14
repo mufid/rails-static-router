@@ -21,3 +21,5 @@ matrix:
       rvm: 2.6.8
     - gemfile: gemfiles/rails61.gemfile
       rvm: 2.7.4
+    - gemfile: gemfiles/rails70.gemfile
+      rvm: 3.1.2
