@@ -42,7 +42,11 @@ new_user_registration  GET   /register(.:format)  static('index.html')
  
 ## Compatibility
 
-This gem is compatible with Rails 4.1+.
+This gem is compatible with Rails 5.0+.
+
+If you want to use with Rails 4.1 or Rails 4.2, use version 1.0.4:
+
+    gem 'rails-static-router', '1.0.4'
 
 ## Rails API Mode
 
