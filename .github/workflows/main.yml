@@ -10,11 +10,22 @@ jobs:
       fail-fast: false
       matrix:
         include:
-          - rubyver: 3.1.2
-            gemfile: gemfiles/rails70.gemfile
+          - gemfile: gemfiles/rails50.gemfile
+            rubyver: 2.4.6
+          - gemfile: gemfiles/rails51.gemfile
+            rubyver: 2.4.6
+          - gemfile: gemfiles/rails52.gemfile
+            rubyver: 2.4.6
+          - gemfile: gemfiles/rails60.gemfile
+            rubyver: 2.6.8
+          - gemfile: gemfiles/rails61.gemfile
+            rubyver: 2.7.4
+          - gemfile: gemfiles/rails70.gemfile
+            rubyver: 3.1.2
 
     env:
       RAILS_ENV: test
+      BUNDLE_GEMFILE: ${{ matrix.gemfile }}
 
     steps:
       - uses: actions/checkout@v2
