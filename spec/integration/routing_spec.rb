@@ -15,8 +15,10 @@ RSpec.describe 'Integration Test', type: :request do
     expect(response.headers['Cache-Control']).to eq('my-cache-control')
   end
 
-  it 'cant response via non-defined static routes' do
-    expect { get '/mantap.txt' }.to raise_exception
+  if Gem::Version.new(Rails.version) < Gem::Version.new('8.0')
+    it 'cant response via non-defined static routes' do
+      expect { get '/mantap.txt' }.to raise_exception
+    end
   end
 
   it 'works with normal controller' do

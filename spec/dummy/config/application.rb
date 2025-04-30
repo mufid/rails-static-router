@@ -8,7 +8,11 @@ Bundler.require(*Rails.groups)
 
 module Dummy
   class Application < Rails::Application
-    if Rails.version.match('7.0')
+    if Rails.version.match('8.0')
+      config.load_defaults 8.0
+    elsif Rails.version.match('7.1')
+      config.load_defaults 7.1
+    elsif Rails.version.match('7.0')
       config.load_defaults 7.0
     elsif Rails.version.match('6.1')
       config.load_defaults 6.1
