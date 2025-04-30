@@ -93,6 +93,14 @@ module ActionDispatch
 
       def call(env)
         env["PATH_INFO"] = path
+        if Gem::Version.new(Rails.version) >= Gem::Version.new('7.1')
+          status, headers, body = @file_handler.call(env)
+          if headers['Cache-Control']
+            headers.delete('last-modified')
+          end
+          return [status, headers, body]
+        end
+
         @file_handler.call(env)
       end
 
